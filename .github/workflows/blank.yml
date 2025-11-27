@@ -1,0 +1,25 @@
+name: Update XML File
+
+on:
+  schedule:
+    - cron: "0 * * * *" # Her saat çalışır
+  workflow_dispatch:
+
+jobs:
+  update-xml:
+    runs-on: ubuntu-latest
+    steps:
+      - name: Repo çek
+        uses: actions/checkout@v3
+
+      - name: XML indir
+        run: |
+          curl -L -o product.xml "https://www.tudemkitabevi.com/XMLExport/0190E8D870B9486D854B02F31010B92F"
+
+      - name: Commit ve push yap
+        run: |
+          git config --local user.email "action@github.com"
+          git config --local user.name "GitHub Action"
+          git add product.xml
+          git commit -m "XML otomatik güncellendi" || echo "No changes"
+          git push
